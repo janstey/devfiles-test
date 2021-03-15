@@ -1,0 +1,28 @@
+apiVersion: 1.0.0
+metadata:
+  name: cq-timer-log
+projects:
+  - name: cq-timer-log
+    source:
+      type: git
+      location: 'https://github.com/janstey/cq-timer-log.git'
+components:
+  - alias: dev
+    type: dockerimage
+    image: registry.devshift.net/che/centos_jdk8
+    mountSources: true
+    endpoints:
+      - name: cq-timer-log
+        port: 8080
+        attributes:
+          protocol: http
+          secure: 'false'
+          public: 'true'
+          discoverable: 'false'
+    memoryLimit: 2048M
+commands:
+  - name: build_&_run
+    actions:
+      - type: exec
+        component: dev
+        command: "cd $CHE_PROJECTS_ROOT/cq-timer-log && mvn clean install && java -jar $CHE_PROJECTS_ROOT/cq-timer-log/target/*-runner.jar 2>&1"
